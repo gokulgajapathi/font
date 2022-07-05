@@ -4,41 +4,8 @@
 
 Plugin Name:font
 */
-$image1 = $_POST["file1"];
-$image2 = $_POST["file2"];
-require 'aws1/aws-autoloader.php';
-use Aws\Rekognition\RekognitionClient;
-
-
- //Credentials for access AWS Service code parameter
-$credentials = new Aws\Credentials\Credentials('{AWS access key ID}', '{AWS secret access key}');
-//Get Rekognition Access
-$rekognitionClient = RekognitionClient::factory(array(
-  'region'	=> "us-east-1",
-  'version'	=> 'latest',
-  'credentials' => $credentials
-));
-
-//Calling Compare Face function
-$compareFaceResults= $rekognitionClient->compareFaces([
-  'SimilarityThreshold' => 80,
-  'SourceImage' => [
-    'bytes'=> base64_encode(file_get_contents('php://input'.$image1))
-  ],
-  'TargetImage' => [
-    'bytes'=> base64_encode(file_get_contents('php://input'.$image2))
-  ],
-]);
-
-print_r($compareFaceResults);
-
-//Response to JSON Data
-/* $FaceMatchesResult = $compareFaceResults['FaceMatches'];
-$SimilarityResult =  $FaceMatchesResult['Similarity']; //Here You will get similarity/
-$sourceImageFace = $compareFaceResults['SourceImageFace'];
-$sourceConfidence = $sourceImageFace['Confidence'];//Here You will get confidence of the picture */
-
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -86,8 +53,15 @@ section {
       <p>
         <img id="image1" />
       </p>
-      
-      <input type="file" accept="image/*" name="image1" id="file1" onchange="loadFile1(event)" style="display: none" />
+
+      <input
+        type="file"
+        accept="image/*"
+        name="image"
+        id="file1"
+        onchange="loadFile1(event)"
+        style="display: none"
+      />
       <label for="file1" style="cursor: pointer">Reference Image</label><br />
 
       <label for="file1" style="cursor: pointer"
@@ -101,7 +75,14 @@ section {
       </p>
 
       <p>
-        <input type="file" accept="image/*" name="image2" id="file2" onchange="loadFile2(event)" style="display: none"/>
+        <input
+          type="file"
+          accept="image/*"
+          name="image"
+          id="file2"
+          onchange="loadFile2(event)"
+          style="display: none"
+        />
       </p>
 
       <p>
@@ -113,7 +94,6 @@ section {
         >
       </p>
     </section>
-
     <script>
       var loadFile1 = function (event) {
   var image = document.getElementById("image1");
@@ -126,5 +106,3 @@ var loadFile2 = function (event) {
 </script>
   </body>
 </html>
-
-
